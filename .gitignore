@@ -1,3 +1,14 @@
+### CUSTOM IGNORE
+
+builds/plots/inkscape/
+
+data/spatial_data/
+
+R/deprecated/
+
+
+### DEFAULT IGNORE
+
 # History files
 .Rhistory
 .Rapp.history
