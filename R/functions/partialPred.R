@@ -79,7 +79,7 @@ partialPred <- function(newdata, var, data, response, model, interaction = FALSE
     ## now new data should contain the mean of all columns, expect of the variable of interest 
     
     ## predict -----------
-    pred <- as.data.frame(predict(model, newdata, se.fit = TRUE, allow_new_levels = TRUE))
+    pred <- as.data.frame(predict(model, newdata, se.fit = TRUE))
    
       newdata.pred <- newdata %>% 
         cbind(pred) %>% 
@@ -180,7 +180,7 @@ partialPred <- function(newdata, var, data, response, model, interaction = FALSE
     ## now new data should contain the mean of all columns, expect of the variable of interest 
     
     ## predict for high -----------
-    pred.high <- as.data.frame(predict(model, newdata.high, se.fit = TRUE, allow_new_levels = TRUE))
+    pred.high <- as.data.frame(predict(model, newdata.high, se.fit = TRUE))
     
 
       
@@ -280,7 +280,7 @@ partialPred <- function(newdata, var, data, response, model, interaction = FALSE
     ## now new data should contain the mean of all columns, expect of the variable of interest and the moderator 
     
     ####predict for low ------------------
-    pred.low <- as.data.frame(predict(model, newdata.low, se.fit = TRUE, allow_new_levels = TRUE))
+    pred.low <- as.data.frame(predict(model, newdata.low, se.fit = TRUE))
     
   
       

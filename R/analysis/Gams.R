@@ -54,7 +54,7 @@ responses<- c("n",
 
 
 names(dt.mod %>% dplyr::select(contains("scaled")))
-vars <- c("s(min_dist_enclosure_scaled)",
+vars <- c("s(min_dist_enclosure_scaled, k = 3)",
           "min_dist_enclosure_scaled",
           "hand_scaled",
           "elevation_scaled",
@@ -135,6 +135,7 @@ guide.raw <- rbind(guide.raw.raw, guide.inter)
 vars
 vars.clean <- gsub("s\\(", "", vars)
 vars.clean <- gsub("\\)", "", vars.clean)
+vars.clean <- gsub(", k = 3", "", vars.clean)
 vars.clean <- gsub("min_dist_enclosure_scaled, by = ", "", vars.clean)
 vars.clean <- data.table(
   vars.clean = vars.clean) %>%
@@ -336,6 +337,10 @@ for(model_group in unique(guide$model_group)){
                              var.names <-  gsub("bs='re'", "", var.names)
                              var.names <-  gsub(" ", "", var.names)
                              var.names <-  gsub("1", "", var.names)
+                             var.names <- gsub(", k = 3", "", var.names)
+                             var.names <- gsub(",k=3", "", var.names)
+                             
+                             
 
                              
                              var.names <- var.names %>% as.data.frame() %>% filter(!grepl("'re'", .)) %>% pull()

@@ -6,6 +6,7 @@ library(tidyr)
 library(broom)
 library(brms)
 library(tidybayes)
+library(gridExtra)
 
 
 dt.mod <- fread("data/clean_data/bfnp_enclosure_model_data.csv") %>% 
@@ -27,7 +28,7 @@ dt.pred.veg <- pred[formula_id %in% c(veg.ids) & clean_var == "min_dist_enclosur
   significance = case_when(
     response == "n" ~ "significant", 
     response == "c" ~ "non significant", 
-    response == "p" ~ "non significant", 
+    response == "p" ~ "significant", 
     response == "k" ~ "significant", 
     response == "mg" ~ "significant", 
     response == "ca" ~ "significant", 
@@ -77,7 +78,7 @@ dt.pred.soil <- pred[formula_id %in% c(soil.ids) & clean_var == "min_dist_enclos
            response == "mg" ~ "non significant", 
            response == "ca" ~ "non significant", 
            response == "na" ~ "significant",
-           response == "cn" ~ "non significant",
+           response == "cn" ~ "significant",
            response == "np" ~ "non significant",
            response == "al" ~ "significant"),
          var_value = as.numeric(var_value),
@@ -156,7 +157,7 @@ pd.veg
 soil.ids <- unique(bm.spec[sphere == "Soil", ]$formula_id)
 dt.pred.soil.dw <- pred[formula_id %in% c(soil.ids) & clean_var == "deadWoodChangeYear", ]  %>% 
   mutate(nutrient = str_to_sentence(response), 
-         significance = ifelse(response %in% c(), "significant", "non significant"), 
+         significance = ifelse(response %in% c("p", "k", "ca"), "significant", "non significant"), 
          var_value = as.numeric(var_value)) %>% left_join(bm.spec) %>% 
   mutate(nutrient = case_when(
     .default = nutrient, 

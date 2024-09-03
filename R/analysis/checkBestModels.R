@@ -6,7 +6,7 @@ library(tidyr)
 library(broom)
 library(brms)
 library(tidybayes)
-library(MuMIn)
+library(mgcv)
 
 dt.mod <- fread("data/clean_data/bfnp_enclosure_model_data.csv") %>% 
   dplyr::filter(!flag == "exclude") %>% 
@@ -34,8 +34,10 @@ vn0 <- gam(n ~ 1, data = dt.veg, select = TRUE, method = "REML")
 vn0
 AICc.vn0 <- unname(as.numeric(AICc(vn0)))
 bm.spec[, .(sphere, response, vars)]
-vn <- gam(n ~ s(min_dist_enclosure_scaled) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
+vn <- gam(n ~ s(min_dist_enclosure_scaled, k = 3) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vn)
+par(mfrow = c(2, 2))
+gam.check(vn)
 
 AICc.vn <- unname(as.numeric(AICc(vn)))
 AICc.vn - AICc.vn0
@@ -45,8 +47,10 @@ vc0 <- gam(c ~ 1, data = dt.veg, select = TRUE, method = "REML")
 vc0
 AICc.vc0 <- unname(as.numeric(AICc(vc0)))
 
-vc <- gam(c ~ hand_scaled + s(min_dist_enclosure_scaled, by = deer_number_scaled) + deadWoodChangeYear_scaled + soilTypeLegendK_scaled, data = dt.veg, select = TRUE, method = "REML")
+vc <- gam(c ~ s(min_dist_enclosure_scaled, k = 3) + hand_scaled + s(min_dist_enclosure_scaled, by = deer_number_scaled) + deadWoodChangeYear_scaled + soilTypeLegendK_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vc)
+par(mfrow = c(2, 2))
+gam.check(vc)
 
 AICc.vc<- unname(as.numeric(AICc(vc)))
 AICc.vc - AICc.vc0
@@ -57,8 +61,10 @@ vp0 <- gam(p ~ 1, data = dt.veg, select = TRUE, method = "REML")
 vp0
 AICc.vp0 <- unname(as.numeric(AICc(vp0)))
 
-vp <- gam(p ~ s(min_dist_enclosure_scaled) + hand_scaled + s(enclosure_name, bs = 're') + s(enclosure_name, min_dist_enclosure_scaled, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
+vp <- gam(p ~ s(min_dist_enclosure_scaled, k = 3) + hand_scaled + s(enclosure_name, bs = 're') + s(enclosure_name, min_dist_enclosure_scaled, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vp)
+par(mfrow = c(2, 2))
+gam.check(vp)
 
 AICc.vp<- unname(as.numeric(AICc(vp)))
 AICc.vp - AICc.vp0
@@ -68,8 +74,10 @@ vk0 <- gam(k ~ 1, data = dt.veg, select = TRUE, method = "REML")
 vk0
 AICc.vk0 <- unname(as.numeric(AICc(vk0)))
 
-vk <- gam(k ~ s(min_dist_enclosure_scaled) + s(enclosure_name, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
+vk <- gam(k ~ s(min_dist_enclosure_scaled, k = 3) + s(enclosure_name, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vk)
+par(mfrow = c(2, 2))
+gam.check(vk)
 
 AICc.vk<- unname(as.numeric(AICc(vk)))
 AICc.vk - AICc.vk0
@@ -80,8 +88,10 @@ vmg0 <- gam(mg ~ 1, data = dt.veg, select = TRUE, method = "REML")
 vmg0
 AICc.vmg0 <- unname(as.numeric(AICc(vmg0)))
 
-vmg <- gam(mg ~ s(min_dist_enclosure_scaled) + s(enclosure_name, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
+vmg <- gam(mg ~ s(min_dist_enclosure_scaled, k = 3) + s(enclosure_name, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vmg)
+par(mfrow = c(2, 2))
+gam.check(vmg)
 
 AICc.vmg<- unname(as.numeric(AICc(vmg)))
 AICc.vmg - AICc.vmg0
@@ -93,6 +103,8 @@ AICc.vca0 <- unname(as.numeric(AICc(vca0)))
 
 vca <- gam(ca ~ min_dist_enclosure_scaled + s(enclosure_name, bs = 're') + soilTypeLegendK_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vca)
+par(mfrow = c(2, 2))
+gam.check(vca)
 
 AICc.vca<- unname(as.numeric(AICc(vca)))
 AICc.vca - AICc.vca0
@@ -104,6 +116,8 @@ AICc.vna0 <- unname(as.numeric(AICc(vna0)))
 
 vna <- gam(na ~ min_dist_enclosure_scaled + s(enclosure_name, bs = 're') + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vna)
+par(mfrow = c(2, 2))
+gam.check(vna)
 
 AICc.vna<- unname(as.numeric(AICc(vna)))
 AICc.vna - AICc.vna0
@@ -114,8 +128,10 @@ vcn0 <- gam(cn ~ 1, data = dt.veg, select = TRUE, method = "REML")
 vcn0
 AICc.vcn0 <- unname(as.numeric(AICc(vcn0)))
 
-vcn <- gam(cn ~ s(min_dist_enclosure_scaled) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + deadWoodChangeYear_scaled + soilTypeLegendK_scaled, data = dt.veg, select = TRUE, method = "REML")
+vcn <- gam(cn ~ s(min_dist_enclosure_scaled, k = 3) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vcn)
+par(mfrow = c(2, 2))
+gam.check(vcn)
 
 AICc.vcn<- unname(as.numeric(AICc(vcn)))
 AICc.vcn - AICc.vcn0
@@ -127,6 +143,8 @@ AICc.vnp0 <- unname(as.numeric(AICc(vnp0)))
 
 vnp <- gam(np ~ hand_scaled + s(enclosure_name, bs = 're') + s(enclosure_name, min_dist_enclosure_scaled, bs = 're'), data = dt.veg, select = TRUE, method = "REML")
 summary(vnp)
+par(mfrow = c(2, 2))
+gam.check(vnp)
 
 AICc.vnp<- unname(as.numeric(AICc(vnp)))
 AICc.vnp - AICc.vnp0
@@ -142,8 +160,10 @@ sn0 <- gam(n ~ 1, data = dt.soil, select = TRUE, method = "REML")
 sn0
 AICc.sn0 <- unname(as.numeric(AICc(sn0)))
 
-sn <- gam(n ~ s(min_dist_enclosure_scaled) + elevation_scaled, data = dt.soil, select = TRUE, method = "REML")
+sn <- gam(n ~ s(min_dist_enclosure_scaled, k = 3) + elevation_scaled, data = dt.soil, select = TRUE, method = "REML")
 summary(sn)
+par(mfrow = c(2, 2))
+gam.check(sn)
 
 AICc.sn <- unname(as.numeric(AICc(sn)))
 AICc.sn - AICc.sn0
@@ -153,8 +173,10 @@ sc0 <- gam(c ~ 1, data = dt.soil, select = TRUE, method = "REML")
 sc0
 AICc.sc0 <- unname(as.numeric(AICc(sc0)))
 
-sc <- gam(c ~ s(min_dist_enclosure_scaled) + hand_scaled + soilTypeLegendK_scaled, data = dt.soil, select = TRUE, method = "REML")
+sc <- gam(c ~ s(min_dist_enclosure_scaled, k = 3) + hand_scaled + soilTypeLegendK_scaled, data = dt.soil, select = TRUE, method = "REML")
 summary(sc)
+par(mfrow = c(2, 2))
+gam.check(sc)
 
 AICc.sc<- unname(as.numeric(AICc(sc)))
 AICc.sc - AICc.sc0
@@ -165,8 +187,10 @@ sp0 <- gam(p ~ 1, data = dt.soil, select = TRUE, method = "REML")
 sp0
 AICc.sp0 <- unname(as.numeric(AICc(sp0)))
 bm.spec
-sp <- gam(p ~ elevation_scaled + s(min_dist_enclosure_scaled, by = deer_number_scaled) + deadWoodChangeYear_scaled, data = dt.soil, select = TRUE, method = "REML")
+sp <- gam(p ~ s(min_dist_enclosure_scaled, k = 3) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_number_scaled) + deadWoodChangeYear_scaled, data = dt.soil, select = TRUE, method = "REML")
 summary(sp)
+par(mfrow = c(2, 2))
+gam.check(vp)
 
 AICc.sp<- unname(as.numeric(AICc(sp)))
 AICc.sp - AICc.sp0
@@ -176,8 +200,10 @@ vk0 <- gam(k ~ 1, data = dt.soil, select = TRUE, method = "REML")
 vk0
 AICc.vk0 <- unname(as.numeric(AICc(vk0)))
 
-vk <- gam(k ~ deadWoodChangeYear_scaled, data = dt.soil, select = TRUE, method = "REML")
+vk <- gam(k ~ s(min_dist_enclosure_scaled, k = 3) + deadWoodChangeYear_scaled, data = dt.soil, select = TRUE, method = "REML")
 summary(vk)
+par(mfrow = c(2, 2))
+gam.check(vk)
 
 AICc.vk<- unname(as.numeric(AICc(vk)))
 AICc.vk - AICc.vk0
@@ -188,8 +214,10 @@ smg0 <- gam(mg ~ 1, data = dt.soil, select = TRUE, method = "REML")
 smg0
 AICc.smg0 <- unname(as.numeric(AICc(smg0)))
 
-smg <- gam(mg ~ s(min_dist_enclosure_scaled) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_number_scaled), data = dt.soil, select = TRUE, method = "REML")
+smg <- gam(mg ~ s(min_dist_enclosure_scaled, k = 3) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_number_scaled) + s(enclosure_name, bs = 're'), data = dt.soil, select = TRUE, method = "REML")
 summary(smg)
+par(mfrow = c(2, 2))
+gam.check(smg)
 
 AICc.smg <- unname(as.numeric(AICc(smg)))
 AICc.smg - AICc.smg0
@@ -199,8 +227,10 @@ sca0 <- gam(ca ~ 1, data = dt.soil, select = TRUE, method = "REML")
 sca0
 AICc.sca0 <- unname(as.numeric(AICc(sca0)))
 
-sca <- gam(ca ~ s(enclosure_name, bs = 're') + deadWoodChangeYear_scaled, data = dt.soil, select = TRUE, method = "REML")
+sca <- gam(ca ~ s(min_dist_enclosure_scaled, k = 3) + s(enclosure_name, bs = 're') + s(enclosure_name, min_dist_enclosure_scaled, bs = 're') + deadWoodChangeYear_scaled, data = dt.soil, select = TRUE, method = "REML")
 summary(sca)
+par(mfrow = c(2, 2))
+gam.check(sca)
 
 AICc.sca<- unname(as.numeric(AICc(sca)))
 AICc.sca - AICc.sca0
@@ -210,8 +240,11 @@ sna0 <- gam(na ~ 1, data = dt.soil, select = TRUE, method = "REML")
 sna0
 AICc.sna0 <- unname(as.numeric(AICc(sna0)))
 
-sna <- gam(na ~ s(min_dist_enclosure_scaled) + hand_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled), data = dt.soil, select = TRUE, method = "REML")
+sna <- gam(na ~ s(min_dist_enclosure_scaled, k = 3) + hand_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled), data = dt.soil, select = TRUE, method = "REML")
 summary(sna)
+r.squaredGLMM(sna)
+par(mfrow = c(2, 2))
+gam.check(sna)
 
 AICc.sna<- unname(as.numeric(AICc(sna)))
 AICc.sna - AICc.sna0
@@ -221,8 +254,12 @@ scn0 <- gam(cn ~ 1, data = dt.soil, select = TRUE, method = "REML")
 scn0
 AICc.scn0 <- unname(as.numeric(AICc(scn0)))
 
-scn <- gam(cn ~ s(min_dist_enclosure_scaled) + hand_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + s(enclosure_name, min_dist_enclosure_scaled, bs = 're') + soilTypeLegendK, data = dt.soil, select = TRUE, method = "REML")
+scn <- gam(cn ~ s(min_dist_enclosure_scaled, k = 3) + hand_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + s(enclosure_name, min_dist_enclosure_scaled, bs = 're') + soilTypeLegendK_scaled, data = dt.soil, select = TRUE, method = "REML")
 summary(scn)
+r.squaredGLMM(scn)
+
+par(mfrow = c(2, 2))
+gam.check(scn)
 
 AICc.scn<- unname(as.numeric(AICc(scn)))
 AICc.scn - AICc.scn0
@@ -234,19 +271,23 @@ AICc.snp0 <- unname(as.numeric(AICc(snp0)))
 
 snp <- gam(np ~ elevation_scaled + s(enclosure_name, min_dist_enclosure_scaled, bs = 're'), data = dt.soil, select = TRUE, method = "REML")
 summary(snp)
+par(mfrow = c(2, 2))
+gam.check(snp)
 
 AICc.snp <- unname(as.numeric(AICc(snp)))
 AICc.snp - AICc.snp0
 
 
 ###### Al
-snp0 <- gam(al ~ 1, data = dt.soil, select = TRUE, method = "REML")
-snp0
-AICc.snp0 <- unname(as.numeric(AICc(snp0)))
+sla0 <- gam(al ~ 1, data = dt.soil, select = TRUE, method = "REML")
+sla0
+AICc.sla0 <- unname(as.numeric(AICc(sla0)))
 
-snp <- gam(al ~ min_dist_enclosure_scaled + elevation_rel_enc_scaled + s(enclosure_name, bs = 're') + soilTypeLegendK_scaled, data = dt.soil, select = TRUE, method = "REML")
-summary(snp)
+sla <- gam(al ~ min_dist_enclosure_scaled + elevation_rel_enc_scaled + s(enclosure_name, bs = 're') + soilTypeLegendK_scaled, data = dt.soil, select = TRUE, method = "REML")
+summary(sla)
+par(mfrow = c(2, 2))
+gam.check(sla)
 
-AICc.snp <- unname(as.numeric(AICc(snp)))
-AICc.snp - AICc.snp0
+AICc.sla <- unname(as.numeric(AICc(sla)))
+AICc.sla - AICc.sla0
 
