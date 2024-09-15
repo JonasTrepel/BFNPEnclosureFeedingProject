@@ -104,13 +104,12 @@ dt.mod <- fread("data/clean_data/bfnp_enclosure_model_data.csv") %>%
   dplyr::filter(!flag == "exclude") %>% 
   mutate(enclosure_name = as.factor(enclosure_name)) %>%
   rename(Elevation = elevation, 
-         HAND = hand, 
+         HAND = hand,
          `Distance to Enclosure` = min_dist_enclosure, 
          `Relative Elevation` = elevation_rel_enc, 
          `Deadwood year` = deadWoodChangeYear) %>% 
   filter(mountain_or_enclosure == "Enclosure") %>%
-  dplyr::select(Elevation, HAND, `Distance to Enclosure`, `Relative Elevation`,`Deadwood year`)
-
+  dplyr::select(Elevation, HAND, `Distance to Enclosure`, `Relative Elevation`,`Deadwood year`) 
 library(GGally)
-p.pair <- ggpairs(dt.mod)
+p.pair <- ggpairs(dt.mod) + theme(axis.text = element_text(angle = 45))
 ggsave(plot = p.pair, "builds/plots/correlations.png", dpi = 600, height = 7, width = 7)
