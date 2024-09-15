@@ -412,14 +412,15 @@ for(model_group in unique(guide$model_group)){
                                  
                                  
                                  marg.tmp <- partialPred(model = m, response = filter.resp,
-                                                    var = var, interaction = TRUE, moderator = moderator,
+                                                    var = var.int, interaction = TRUE, moderator = moderator,
                                                     data = dt.sub, newdata = dt.sub %>% dplyr::select(-c(all_of(filter.resp))))
                                  
                                  moderator.clean <-  gsub("_scaled", "", moderator)
                                  
-                                 marg.tmp.int <- marg.tmp %>% rename(var_value = paste0(gsub("_scaled", "", var))) %>% mutate(term = var,
+                                 marg.tmp.int <- marg.tmp %>% rename(var_value = paste0(gsub("_scaled", "", var.int))) %>% mutate(term = var.int,
                                                                                                                               clean_var = gsub("log_", "", term),
                                                                                                                               clean_var = gsub("_scaled", "", clean_var),
+                                                                                                                              moderator = moderator.clean,
                                                                                                                               enclosure_name = dt.sub$enclosure_name,
                                                                                                                               response_value = dt.sub %>% dplyr::select(c(all_of(filter.resp)))%>% pull(),
                                                                                                                               moderator_value = dt.sub %>% dplyr::select(c(all_of(moderator.clean)))%>% pull())
@@ -440,7 +441,7 @@ for(model_group in unique(guide$model_group)){
                              bm.spec.out <- rbind(bm.spec, bm.spec.out)
                              res.out <- rbind(res, res.out)
                              pred.out <- rbind(pred, pred.out)
-                             pred.int.out <- rbind(pred, pred.int.out)
+                             pred.int.out <- rbind(pred.int, pred.int.out)
                              
                              
                            }

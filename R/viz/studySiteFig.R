@@ -52,19 +52,31 @@ dt.mod <- fread("data/clean_data/bfnp_enclosure_model_data.csv") %>%
 
 dt.sf <- read_sf("data/spatial_data/plotAndLabDataMay2023/Plots_and_lab_results_enclosures_and_mountains_2023.shp") 
 xy <- st_coordinates(dt.sf)
-dt.sf.coords <- dt.sf %>% cbind(xy) %>% filter(Mnt_O_E == "Enclosure")
+dt.sf.coords <- dt.sf %>% cbind(xy) %>% filter(Mnt_O_E == "Enclosure") %>%  mutate(flag = ifelse(Notes %in% c(
+  "Very close to road; soil 20m deeper in forest",
+  "Very close to road",
+  "Close to building",
+  "Recent clearcut; be careful with soil compaction",
+  "Close to annoyingly well used sreet",
+  "Close to gravel road",
+  "Very close (5m) to fertilized meadow/n/n",
+  "Close to fertilized meadow (25m)",
+  "Soil wet",
+  "Close to forest road",
+  "Rather wet soil"
+), "exclude", "ok"))
 
 bfnp <- read_sf("data/spatial_data/Outline/WDPA_WDOECM_Jul2024_Public_667_shp_0/WDPA_WDOECM_Jul2024_Public_667_shp-polygons.shp") %>% summarize() %>% st_transform(crs = 4326)
 mapview::mapview(bfnp)
 
 
 p.loc <- ggplot() +
-  geom_sf(data = bfnp ) +
+  geom_sf(data = bfnp, fill = "grey95" ) +
   annotation_scale( location = "bl",bar_cols = c("grey60", "white")) +
-  geom_point(data=dt.sf.coords, aes(x = X, y = Y), size = 3, alpha = 0.5, color = "black") +
+  geom_point(data=dt.sf.coords, aes(x = X, y = Y, color = flag), size = 3, alpha = .7) +
   geom_sf(data = enclosure.locs, aes(fill = enclosure_name)) +
   scale_fill_met_d(name = "Egypt") +
-  scale_color_met_d(name = "Cassatt2") +
+  scale_color_manual(values = c("ok" = "black", "exclude" = "grey40"), guide = "none") +
   theme_void() +
   labs(x = "Longitude", y = "Latitude", fill = "Enclosure") +
   theme(legend.position = c(0.15, 0.2))
