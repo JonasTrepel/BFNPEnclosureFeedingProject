@@ -1,6 +1,6 @@
 # BFNPEnclosureFeedingProject
 
-This project contains data and scripts for the manuscript "Intensive Feeding Modifies Nutrient Patterns in a Strictly Protected Area" by Jonas Trepel, Andrew J. Abraham, Uriel Gélin, Martin Gahbauer, Marco Heuricha, and Elizabeth le Roux. 
+This project contains data and scripts for the manuscript "Intensive Feeding Modifies Nutrient Patterns in a Strictly Protected Area" 
 
 ## Main dataset
 The main dataset is "bfnp_enclosure_model_data.csv" and can be found in "data/clean_data/". The relevant columns can be described as follows: 
