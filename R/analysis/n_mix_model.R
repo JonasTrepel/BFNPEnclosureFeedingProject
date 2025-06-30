@@ -1,6 +1,6 @@
 # RED DEER N-MIXTURE MODEL
 
-remove(list=ls())
+#remove(list=ls())
 
 # N-MIXTURE MODEL
 
@@ -8,6 +8,7 @@ library("readr")
 library("unmarked")
 library("AICcmodavg")
 library("dplyr")
+library("nmixgof")
 
 
 occ_length_3<-read.csv("data/n_mixture_data/red_deer_occasion_lentgh_count_3days.csv") 
@@ -53,6 +54,29 @@ p3.1.2.1=pcount(~ scale(effort) + scale(buffer10_VG_mean)        #detection vari
                 data=umf3)
 
 summary(p3.1.2.1) #AIC: 5514.421 
-#chat(p3.1.2.1) #2.694068
+chat(p3.1.2.1) #2.694068
 saveRDS(p3.1.2.1, file="builds/model_outputs/p3_1_2_1_nopred.Rds")
 load("builds/model_outputs/p3_1_2_1_nopred.RData")
+
+###### 3. Adjust estimate with quasi-likelihood approach #####
+
+# Calculate overdispersion parameter
+chat(p3.1.2.1)
+
+# Extract abundance part of the model
+abundance_summary <- summary(p3.1.2.1)$state
+
+# Extract standard errors from abundance part
+se <- abundance_summary[, "SE"]
+
+# Adjust standard errors for over-dispersion 
+adjusted_se <- se * sqrt(chat(p3.1.2.1)) 
+
+# Create a summary table with adjusted standard errors 
+summary_table <- data.frame(
+  Estimate = abundance_summary[, "Estimate"],
+  Adjusted_SE = adjusted_se,
+  Z_value = abundance_summary[, "Estimate"] / adjusted_se,
+  P_value = 2 * (1 - pnorm(abs(abundance_summary[, "Estimate"] / adjusted_se)))
+)
+print(summary_table)
