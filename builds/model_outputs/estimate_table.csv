@@ -1,0 +1,13 @@
+Component,Term,Estimatet (CI),SE,z,p
+Detection,Intercept,-3.627 (-3.936; -3.317),0.158,-37.599,0
+Detection,Sampling Effort,0.143 (0.002; 0.284),0.072,3.267,0.047
+Detection,Vegetation Density,-0.008 (-0.38; 0.364),0.19,-0.068,0.967
+Abundance,Intercept,1.156 (0.628; 1.683),0.269,7.048,0
+Abundance,Habitat: Deadwood,0.599 (0.021; 1.178),0.295,3.337,0.042
+Abundance,Habitat: Deciduous Stand,0.576 (0.011; 1.14),0.288,3.286,0.046
+Abundance,Habitat: Mixed Stand,0.294 (-0.278; 0.867),0.292,1.656,0.313
+Abundance,Habitat: Open Habitat,0.86 (0.131; 1.589),0.372,3.798,0.021
+Abundance,Canopy Cover,-0.267 (-0.493; -0.042),0.115,-3.808,0.02
+Abundance,Elevation,-0.215 (-0.399; -0.031),0.094,-3.775,0.022
+Abundance,Vegetation Density,0.438 (0.046; 0.83),0.2,3.601,0.029
+Abundance,Distance to Enclosure,-0.202 (-0.376; -0.027),0.089,-3.707,0.023
