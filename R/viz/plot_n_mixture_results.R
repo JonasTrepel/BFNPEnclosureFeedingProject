@@ -86,7 +86,7 @@ dt_est <- m_summ$state %>%
          ci_ub = estimate + 1.96*SE, 
          p = round(`P(>|z|)`, 3)) %>% 
   mutate( clean_term = case_when(
-    term == "(Intercept)" ~ "Intercept",
+    term == "(Intercept)" ~ "Habitat: Coniferous",
     term == "ht_croppeddeadwood" ~ "Habitat: Deadwood",
     term == "ht_croppeddec_stand" ~ "Habitat: Deciduous Stand",
     term == "ht_croppedmix_stand" ~ "Habitat: Mixed Stand",
@@ -100,7 +100,7 @@ dt_est <- m_summ$state %>%
 
 
 p_est <- dt_est %>%
-  filter(clean_term != "Intercept") %>% 
+ # filter(clean_term != "Intercept") %>% 
   ggplot(aes(x = estimate, y = reorder(clean_term, estimate))) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray50") +
   geom_pointrange(
