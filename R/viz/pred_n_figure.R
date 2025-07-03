@@ -117,10 +117,10 @@ dem.ex <- terra::extract(dem, # the rast layers
                          mean, na.rm = T) # since we're dealing with polygons we need to summarize per overlapping pixel somehow
 
 dem.ex # 
-setDT(extraction)
+setDT(dem.ex)
 
 gridCovRaw$elevation <- dem.ex[,2]
-mapview(gridCovRaw, zcol = "elevation")
+#mapview(gridCovRaw, zcol = "elevation")
 
 
 gridCov <- gridCovRaw %>%
@@ -137,13 +137,14 @@ gridCov <- gridCovRaw %>%
 
 dt.mod <- fread("data/clean_data/bfnp_enclosure_model_data.csv") %>% 
   dplyr::filter(!flag == "exclude") %>% 
-  mutate(enclosure_name = as.factor(enclosure_name))
+  mutate(enclosure_name = as.factor(enclosure_name)) %>% 
+  unique()
 
 dt.veg <- dt.mod[type == 'Vegetation' & tier == 'Enclosures', ]
 
 
 library(mgcv)
-vn <- gam(n ~ s(min_dist_enclosure_scaled, k = 3) + elevation_scaled + s(min_dist_enclosure_scaled, by = deer_density_scaled) + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
+vn <- gam(n ~ s(min_dist_enclosure_scaled, k = 3) + deadWoodChangeYear_scaled, data = dt.veg, select = TRUE, method = "REML")
 summary(vn)
 
 gridCov$vegNPred <- as.numeric(predict(vn, newdata = gridCov))
@@ -162,6 +163,6 @@ p <- ggplot() +
   labs(color = "Predicted\nVegetation N\n(mg/g)", fill = "Predicted\nVegetation N\n(mg/g)")
 p
 
-ggsave(plot = p, "builds/plots/predictedPlantN.png", dpi = 600)
+ggsave(plot = p, "builds/plots/predicted_plant_n.png", dpi = 600)
   
 
