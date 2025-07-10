@@ -29,7 +29,9 @@ get_mode <- function(x, na.rm = FALSE) {
 
 var_raw <- read.csv("data/n_mixture_data/vars_prediction.csv") 
 
-var <- read.csv("data/n_mixture_data/vars_prediction.csv") %>% 
+var <- read.csv("data/n_mixture_data/vars_prediction.csv") %>%
+  mutate(buffer35_VG_mean = buffer35_VG_mean*(-1) #need tp be inverted to ensure larger values - higher density 
+         ) %>% 
   mutate(veg_coverage_10m_2019_2020_25833 = median(veg_coverage_10m_2019_2020_25833), 
          DTM_final_25833 = median(DTM_final_25833), 
          buffer35_VG_mean = median(buffer35_VG_mean), 
@@ -55,7 +57,7 @@ dt_pred <- pred_raw %>% as.data.frame() %>%
 
 
 p_pred <- ggplot(dt_pred, aes(x = dist_wint, y = Predicted)) +
-  geom_line(linewidth = 1.2) +
+  geom_line(linewidth = 1.2, color = "darkred") +
   geom_ribbon(aes(ymin = adj_ci_lb, ymax = adj_ci_ub), alpha = 0.2) +
   labs(
     x = "Distance to Enclosure (m)",

@@ -9,7 +9,8 @@ library("unmarked")
 library("AICcmodavg")
 library("dplyr")
 library("nmixgof")
-
+library(tidyverse)
+library(data.table)
 
 occ_length_3<-read.csv("data/n_mixture_data/red_deer_occasion_lentgh_count_3days.csv") 
 colnames(occ_length_3)[which(names(occ_length_3) == "X")] <- "CT_id"  
@@ -28,7 +29,9 @@ occ_length_3_vars<-left_join(occ_length_3, vars, by="CT_id")
 
 y3<-occ_length_3_vars[,c(2:58)]         #Count Matrix for repeated count
 
-siteCovs3 <- occ_length_3_vars[,c(118:134)]      ##Site covariates for abundance and detection
+siteCovs3 <- occ_length_3_vars[,c(118:134)] %>% ##Site covariates for abundance and detection
+  mutate(buffer35_VG_mean = buffer35_VG_mean*(-1), #need tp be inverted to ensure larger values - higher density 
+         buffer10_VG_mean = -buffer10_VG_mean*(-1))
 
 obsCovs3<-list( effort=occ_length_3_vars[,c(59:115)]) #Observation effort for detection
 

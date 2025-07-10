@@ -1,4 +1,4 @@
-Component,Term,Estimatet (CI),SE,z,p
+Component,Term,Estimate (CI),SE,z,p
 Detection,Intercept,-3.627 (-3.936; -3.317),0.158,-37.599,0
 Detection,Sampling Effort,0.143 (0.002; 0.284),0.072,3.267,0.047
 Detection,Vegetation Density,-0.008 (-0.38; 0.364),0.19,-0.068,0.967
